@@ -2,7 +2,10 @@
 
 Compares different linq and non-linq queries to join 2 lists
 
-Example run for n = 100000 (Release settings, i7-4770@3.4GHz 4 Cores, 16Gb RAM ):
+
+
+  Example run for n = 100000 (Release settings, i7-4770@3.4GHz 4 Cores, 16Gb RAM ):  
+  
                             Join() Execution Time:                  25 ms, list size 6666
                            Hashset Execution Time:                  11 ms, list size 6666
                         Dictionary Execution Time:                  26 ms, list size 6666
