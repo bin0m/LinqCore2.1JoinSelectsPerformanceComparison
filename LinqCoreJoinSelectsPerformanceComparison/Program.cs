@@ -26,7 +26,7 @@ namespace LinqCoreJoinSelectsPerformanceComparison
 
         public static void Main(string[] args)
         {
-            const int n = 100000;
+            const int n = 500000;
 
             // 1st Collection: Main dto objects list
             List<SomeBigDTO> bigList = new List<SomeBigDTO>();
@@ -47,12 +47,13 @@ namespace LinqCoreJoinSelectsPerformanceComparison
             var watch = new System.Diagnostics.Stopwatch();
 
 
-
             watch.Start();
             IEnumerable<SomeBigDTO> results = bigList.Join(targetIds, mdb => mdb.Id, p => p,
                 (x, y) => x).ToList();
             watch.Stop();
             Console.WriteLine($"{"Join() Execution Time:",CELL1_SIZE}" + $"{watch.ElapsedMilliseconds,CELL2_SIZE} ms, list size {results.Count()}");
+
+        
 
             watch.Restart();
             HashSet<int> priceHash = new HashSet<int>(targetIds);
@@ -66,11 +67,16 @@ namespace LinqCoreJoinSelectsPerformanceComparison
             watch.Stop();
             Console.WriteLine($"{"Dictionary Execution Time:",CELL1_SIZE}" + $"{ watch.ElapsedMilliseconds,CELL2_SIZE} ms, list size {resultsHash.Count()}");
 
+            watch.Start();
+            var results12 = bigList.Select(l => l.Id).Intersect(targetIds).ToList();
+            watch.Stop();
+            Console.WriteLine($"{"Intersect() Execution Time:",CELL1_SIZE}" + $"{watch.ElapsedMilliseconds,CELL2_SIZE} ms, list size {results12.Count()}");
+
             watch.Restart();
             IEnumerable<SomeBigDTO> results16 = bigList.AsParallel().Where(x => Array.IndexOf(targetIds, x.Id) >= 0).ToList();
             watch.Stop();
             Console.WriteLine($"{"Where(IndexOf).AsParallel() Execution Time:",CELL1_SIZE}" + $"{watch.ElapsedMilliseconds,CELL2_SIZE} ms, list size {results16.Count()}");
-
+            
             watch.Restart();
             IEnumerable<SomeBigDTO> results9 = bigList.AsParallel().Where(x => targetIds.Contains(x.Id)).ToList();
             watch.Stop();
